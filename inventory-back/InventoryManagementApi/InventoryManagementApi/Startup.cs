@@ -32,12 +32,16 @@ namespace InventoryManagementApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            var connectionString = Configuration.GetConnectionString("MySqlServerConnection");
-            services.AddDbContextPool<InventoryDbContext>(options => options.UseMySql(connectionString,
-                ServerVersion.AutoDetect(connectionString), builder =>
-                {
-                    builder.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null);
-                }));
+            var connectionString = Configuration.GetConnectionString("SqlServerConnection");
+            //services.AddDbContextPool<InventoryDbContext>(options => options.UseMySql(connectionString,
+            //    ServerVersion.AutoDetect(connectionString), builder =>
+            //    {
+            //        builder.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null);
+            //    }));
+            services.AddDbContextPool<InventoryDbContext>(options => options.UseSqlServer(connectionString, builder =>
+            {
+                builder.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null);
+            }));
             services.AddScoped<IProductService, ProductService>();
             services.AddTransient<IProductRepository, ProductRepository>();
             services.AddControllers();
@@ -74,3 +78,4 @@ namespace InventoryManagementApi
         }
     }
 }
+ 
